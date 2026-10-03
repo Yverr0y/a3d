@@ -557,6 +557,22 @@ class SceneRuntime
                 Shading useShading = shading;
                 TextureMode useTex = textureMode;
                 _prepare(mr, shading, textureMode, material, tex, useShading, useTex, be);
+                // Lighting takes normals through the model matrix even on the
+                // projected path, so it has to be pushed even though the
+                // positions bypass it - Viewer::_drawMeshTile() says the same
+                // thing about the array path and does the same call.
+                //
+                // Leaving it out is invisible on a SKINNED model, because
+                // skinning has already put the normals in world space and
+                // _modelMatrix() hands back identity for one. It is not
+                // invisible on a container whose parts are placed by NODE
+                // transforms: those normals are local, the light stays in
+                // world space, and every rotated part is lit as though it had
+                // not been rotated. Measured on a 7-part node-animated car,
+                // that was 44% of the brightness the unbinned path produced
+                // from the same light - dark enough to read as "this model
+                // needs a brighter light" rather than as a bug.
+                be->setModelMatrix(_modelMatrix(mr, node));
                 be->setMaterial(material);
                 be->setShading(useShading, useTex);
 

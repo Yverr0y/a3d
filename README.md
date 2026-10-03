@@ -593,9 +593,18 @@ headers, the same single include root, and the same seam.
 
 Two groups, and the directory you open says which toolchain it is for.
 
-### `examples/ESP-IDF/` — four boards, all run on the hardware they name
+### `examples/ESP-IDF/` — a tutorial and four boards, all run on the hardware they name
 
-They boot straight into the viewer.
+**If you are here to learn a3d rather than to check a board, read
+[Tutorial_01](examples/ESP-IDF/Tutorial_01) first.** Six lessons, one
+`#define` between them, from a black screen to a low-poly car on a race track
+that never ends: the model, a background behind it, light, the camera and
+animation arrive one lesson at a time, each with a picture of what the panel
+shows. It runs on the ESP32-P4-Nano's 10.1" panel, landscape on glass that
+scans portrait, and the half that knows about a3d names no vendor header, so
+the lessons paste into a project for any board.
+
+The four board demos boot straight into the viewer.
 
 | Example | Board | What it teaches |
 |---|---|---|
@@ -957,7 +966,7 @@ src/backends/esp_lcd/   a3d::Display from an esp_lcd panel you already have
 src/loaders/        .a3d from memory, stdio, an ESP partition; STL; SD card
 src/viewer/         a3d::Viewer - the four-call wrapper
 tools/              the exporter chain and the host previewer
-examples/ESP-IDF/   four boards, all run on the hardware they name
+examples/ESP-IDF/   a tutorial and four boards, all run on the hardware they name
 examples/Arduino/   two sketches
 docs/DISPLAY_ESP_IDF.md  getting a panel lit under ESP-IDF
 docs/DISPLAY_ARDUINO.md  the same under Arduino

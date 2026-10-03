@@ -4,6 +4,51 @@ All notable changes to a3d are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- **A container whose parts are placed by node transforms was lit wrongly by
+  `a3d::Viewer`, and by anything else on the binned path.**
+  `SceneRuntime::drawDrawableTile()` sets the material and the shading model
+  before handing the backend a `ProjectedBatch`, but never set the MODEL
+  MATRIX. Positions do not need it - the binner has already projected them -
+  but lighting does: the backend carries the light into the mesh's own space
+  using that matrix, so without it every rotated part was lit as though it had
+  not been rotated.
+
+  Invisible on a SKINNED model, which is why it survived: skinning has already
+  put the normals in world space and `_modelMatrix()` hands back identity for
+  one, so Fox and CesiumMan - both skinned, and both of the shipped fixtures -
+  render byte for byte identically before and after this change. Every
+  published measurement stands.
+
+  Measured on a 7-part node-animated car at 400x400 with the light a3d
+  defaults to: mean red across the lit pixels went from 5.7/31 to 13.2/31, and
+  13.2 is what the unbinned path (`SceneRuntime::draw()`, which `a3d_view`
+  uses) produced from the same light all along. The two paths are meant to
+  agree, and the comment above `_prepare()` says so.
+
+  `Viewer::_drawMeshTile()` had this right for the array path and carries the
+  comment explaining why; the container path is now the same.
+
+### Added
+- `examples/ESP-IDF/Tutorial_01`: six lessons from an empty screen to an
+  endless top-down race track, selected by one `#define`. Splits into a board
+  half and an a3d half that names no vendor header, so the lessons compile on
+  a host - which is how its README's pictures were made.
+
+  It is **landscape on a panel that scans portrait**, which a MIPI-DSI video
+  panel cannot be asked to do: the DPI peripheral scans the framebuffer out in
+  hardware and `esp_lcd_panel_swap_xy()` is not implemented for it. So the
+  example draws 1280x800 and rotates each strip into the 800x1280 panel in its
+  own `a3d::Display` wrapper - which needs no change to a3d at all, because a
+  Display is a size and a blit and nothing above it can tell that the blit
+  happens to turn the pixels. The transpose is checked pixel for pixel against
+  an independent rotation, both directions, with tile heights that do and do
+  not divide the screen, and the example has been flashed and run on the
+  Waveshare ESP32-P4-Nano with the 10.1" panel it is written for, where the
+  full scene runs at 14 fps.
+
 ## [0.9.3] - 2026-09-14
 
 Packaging only. Nothing in `src/` moved, and a build that worked on 0.9.2

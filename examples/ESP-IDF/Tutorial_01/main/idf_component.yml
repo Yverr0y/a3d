@@ -1,0 +1,29 @@
+## The board component next door pulls the panel and the touch driver; this
+## file pins the whole graph so two people building this tutorial a month
+## apart get the same object code. The tutorial itself reads no touch, but the
+## board pulls the touch driver either way, so it is pinned with the rest.
+##
+## EXACT versions, not ranges. A caret range is still a range, and this tree
+## has already watched a driver walk from 2.1.0 to 2.2.0 between a board run
+## and a fresh clone with nothing here having changed.
+##
+## The one that bites if it moves:
+##
+##   esp_lcd_jd9365.c:85: 'esp_lcd_panel_dev_config_t' has no member named
+##                        'color_space'
+##
+## Waveshare ship 1.0.6 for IDF 5.x and 2.0.0 for IDF 6.x, and neither is
+## "newer and better" - each is right for one IDF. 2.0.0 reads `rgb_ele_order`
+## and guards its config macros with ESP_IDF_VERSION, which is why it is the
+## one pinned here and why this project builds on both majors.
+dependencies:
+  idf: ">=5.4"
+  waveshare/esp_lcd_jd9365: "2.0.0"
+  espressif/esp_lcd_touch_gt911: "1.2.1"
+  # Transitive, pinned here too. The vendor drivers pull these in through
+  # their own ranges, so without a pin they are free to move under a build
+  # whose direct versions are exact. Each satisfies every vendor's stated
+  # range, so this constrains the solver without fighting it.
+  espressif/esp_lcd_touch: "1.2.1"
+  espressif/i2c_bus: "1.5.2"
+  espressif/cmake_utilities: "0.5.3"

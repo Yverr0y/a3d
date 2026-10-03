@@ -1,5 +1,23 @@
 # ESP-IDF demos
 
+## Start here
+
+[**Tutorial_01**](Tutorial_01) is the one to read first. Six lessons, one
+number to change between them, from a black screen to a low-poly car on a
+race track that never ends. Everything a3d does - loading a model, a
+background, lighting, the camera, animation - arrives one lesson at a time,
+and the half that knows about a3d names no vendor header, so the lessons paste
+into your own project whatever your board is.
+
+It also answers a question the other four do not: it is **landscape on a panel
+that scans portrait**, which a MIPI-DSI video panel cannot be asked to do in
+its driver. The whole of the fix is one `a3d::Display` that wraps another and
+turns the pixels, which is a3d's design working rather than a workaround.
+
+[![the six lessons](https://raw.githubusercontent.com/0015/a3d/main/examples/ESP-IDF/Tutorial_01/docs/steps.png)](Tutorial_01)
+
+## The board demos
+
 Four ESP-IDF projects that boot straight into the viewer. They are **copies** of
 the four at `examples/Waveshare_*`, with the start-up benchmark removed.
 
@@ -14,6 +32,12 @@ the four at `examples/Waveshare_*`, with the start-up benchmark removed.
 cd Waveshare_ESP32-S3-Touch-AMOLED-1.75C
 idf.py set-target esp32s3 && idf.py -p <port> flash monitor
 ```
+
+`Tutorial_01` borrows the P4 board component from
+`Waveshare_ESP32-P4-Nano-Bench/components` rather than copying it, so the two
+projects share one panel bring-up. That is also the reason the tutorial's
+`CMakeLists.txt` checks for it and says what to do when it is building for a
+different board.
 
 ## ESP-IDF version
 
@@ -95,3 +119,10 @@ in step.
 All four configure and build to a flashable binary on ESP-IDF **5.5.4**.
 **None has been flashed in this form** - the originals they were copied from
 were run on the boards they name.
+
+`Tutorial_01` builds to a flashable esp32p4 binary on **5.5.4** with no
+warnings, at every one of its six settings and with the rotation both on and
+off; every lesson has been rendered at 1280x800 off screen on a host and
+looked at, and the rotation is checked pixel for pixel against an independent
+90-degree rotation. **It has also been flashed and run** on the board it names,
+which is more than the four copies above can say.

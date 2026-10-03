@@ -1,0 +1,7 @@
+# Name,   Type, SubType, Offset,  Size, Flags
+# The car is embedded in the app image: low-poly_car.a3d is 51 KB of .rodata,
+# which on an ESP32 is memory-mapped flash - a3d samples its texture in place.
+# 4M is generous, and leaves room for the model you replace it with.
+nvs,      data, nvs,     0x9000,  0x6000,
+phy_init, data, phy,     0xf000,  0x1000,
+factory,  app,  factory, ,        4M,
